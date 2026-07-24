@@ -11,7 +11,8 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body { font-family: -apple-system, 'Noto Sans KR', 'Malgun Gothic', sans-serif; background: #f2f2f7; color: #1c1c1e; padding: 0; }
 
-  .header { position: sticky; top: 0; z-index: 100; background: rgba(242,242,247,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 14px 16px 10px; border-bottom: 1px solid #e0e0e0; }
+  .sticky-top { position: sticky; top: 0; z-index: 100; background: #f2f2f7; }
+  .header { background: rgba(242,242,247,0.92); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); padding: 14px 16px 10px; border-bottom: 1px solid #e0e0e0; }
   .header h1 { font-size: 20px; font-weight: 700; }
   .header .sub { font-size: 12px; color: #8e8e93; margin-top: 2px; }
 
@@ -30,17 +31,19 @@
   .progress-row .cnt { font-size: 13px; font-weight: 700; color: #ff6b35; white-space: nowrap; }
   .progress-row .reset { font-size: 11px; padding: 3px 8px; border: 1px solid #d1d1d6; border-radius: 6px; background: #fff; color: #8e8e93; cursor: pointer; }
 
-  .gu-tabs { padding: 10px 16px; background: #fff; border-bottom: 1px solid #e5e5ea; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+  .gu-tabs-wrap { display: flex; align-items: center; background: #fff; border-bottom: 1px solid #e5e5ea; padding: 0 6px; }
+  .gu-tabs-arrow { flex-shrink: 0; width: 26px; height: 26px; border: none; border-radius: 50%; background: #f2f2f7; color: #3a3a3c; font-size: 15px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .gu-tabs-arrow:hover { background: #e5e5ea; }
+  .gu-tabs { flex: 1; min-width: 0; padding: 10px 6px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
   .gu-tabs::-webkit-scrollbar { display: none; }
   .gu-tab { display: inline-block; padding: 6px 14px; margin-right: 6px; background: #f2f2f7; border-radius: 16px; font-size: 13px; color: #3a3a3c; text-decoration: none; transition: background 0.2s; }
   .gu-tab:active, .gu-tab:hover { background: #ff6b35; color: #fff; }
   .gu-tab .tab-cnt { font-weight: 700; margin-left: 2px; }
 
-  .map-bar { padding: 12px 16px; background: #fff; border-bottom: 1px solid #e5e5ea; }
-  .map-toggle-btn { width: 100%; padding: 10px; border: none; border-radius: 10px; background: #2c2c2c; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
+  .map-bar { padding: 12px 16px; background: #fff; border-bottom: 1px solid #e5e5ea; display: flex; gap: 10px; }
+  .map-toggle-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; background: #2c2c2c; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
   .map-toggle-btn:hover { background: #3c3c3c; }
-  .plan-bar { padding: 0 16px 12px; background: #fff; border-bottom: 1px solid #e5e5ea; }
-  .plan-toggle-btn { width: 100%; padding: 10px; border: none; border-radius: 10px; background: #eafccb; color: #4d7c0f; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s, color 0.2s; }
+  .plan-toggle-btn { flex: 1; padding: 10px; border: none; border-radius: 10px; background: #eafccb; color: #4d7c0f; font-size: 14px; font-weight: 600; cursor: pointer; transition: background 0.2s, color 0.2s; }
   .plan-toggle-btn:hover { background: #d9f99d; }
   .plan-toggle-btn.active { background: #84cc16; color: #fff; }
   #map { height: 350px; width: 100%; display: none; }
@@ -83,11 +86,8 @@
     .header .sub { font-size: 13px; }
     .search-section { padding: 12px 24px; }
     .progress-section { padding: 14px 24px; }
-    .gu-tabs { padding: 12px 24px; }
+    .gu-tabs-wrap { padding: 0 18px; }
     .map-bar { padding: 14px 24px; }
-    .map-toggle-btn { max-width: 300px; }
-    .plan-bar { padding: 0 24px 14px; }
-    .plan-toggle-btn { max-width: 300px; }
     #map { height: 450px; }
     .gu-header { padding: 10px 24px; }
     .card { padding: 16px 24px; gap: 16px; }
@@ -105,6 +105,7 @@
 <body>
 <div class="wrap">
 
+<div class="sticky-top">
 <div class="header">
   <h1>서울 전시 목록</h1>
   <div class="sub">아트바바 기준 | 2026년 7월 20일 | 137개 전시</div>
@@ -130,14 +131,16 @@
   </div>
 </div>
 
-<div class="plan-bar">
-  <button class="plan-toggle-btn" id="planOnlyBtn" onclick="togglePlanOnly()">🌱 갈 예정만 보기</button>
+<div class="gu-tabs-wrap">
+  <button class="gu-tabs-arrow" onclick="scrollTabs(-1)" aria-label="이전 지역">‹</button>
+  <div class="gu-tabs" id="guTabs"><a class='gu-tab' href='#s-jongno'>종로구<span class='tab-cnt'>39</span></a><a class='gu-tab' href='#s-yongsan'>용산구<span class='tab-cnt'>27</span></a><a class='gu-tab' href='#s-jung'>중구<span class='tab-cnt'>16</span></a><a class='gu-tab' href='#s-gangnam'>강남구<span class='tab-cnt'>11</span></a><a class='gu-tab' href='#s-mapo'>마포구<span class='tab-cnt'>12</span></a><a class='gu-tab' href='#s-seongbuk'>성북구<span class='tab-cnt'>7</span></a><a class='gu-tab' href='#s-nowon'>노원구<span class='tab-cnt'>4</span></a><a class='gu-tab' href='#s-yeongdeungpo'>영등포구<span class='tab-cnt'>2</span></a><a class='gu-tab' href='#s-songpa'>송파구<span class='tab-cnt'>2</span></a><a class='gu-tab' href='#s-seocho'>서초구<span class='tab-cnt'>5</span></a><a class='gu-tab' href='#s-seongdong'>성동구<span class='tab-cnt'>3</span></a><a class='gu-tab' href='#s-gwangjin'>광진구<span class='tab-cnt'>3</span></a><a class='gu-tab' href='#s-seodaemun'>서대문구<span class='tab-cnt'>1</span></a><a class='gu-tab' href='#s-dongdaemun'>동대문구<span class='tab-cnt'>1</span></a><a class='gu-tab' href='#s-dobong'>도봉구<span class='tab-cnt'>1</span></a><a class='gu-tab' href='#s-geumcheon'>금천구<span class='tab-cnt'>3</span></a></div>
+  <button class="gu-tabs-arrow" onclick="scrollTabs(1)" aria-label="다음 지역">›</button>
 </div>
-
-<div class="gu-tabs"><a class='gu-tab' href='#s-jongno'>종로구<span class='tab-cnt'>39</span></a><a class='gu-tab' href='#s-yongsan'>용산구<span class='tab-cnt'>27</span></a><a class='gu-tab' href='#s-jung'>중구<span class='tab-cnt'>16</span></a><a class='gu-tab' href='#s-gangnam'>강남구<span class='tab-cnt'>11</span></a><a class='gu-tab' href='#s-mapo'>마포구<span class='tab-cnt'>12</span></a><a class='gu-tab' href='#s-seongbuk'>성북구<span class='tab-cnt'>7</span></a><a class='gu-tab' href='#s-nowon'>노원구<span class='tab-cnt'>4</span></a><a class='gu-tab' href='#s-yeongdeungpo'>영등포구<span class='tab-cnt'>2</span></a><a class='gu-tab' href='#s-songpa'>송파구<span class='tab-cnt'>2</span></a><a class='gu-tab' href='#s-seocho'>서초구<span class='tab-cnt'>5</span></a><a class='gu-tab' href='#s-seongdong'>성동구<span class='tab-cnt'>3</span></a><a class='gu-tab' href='#s-gwangjin'>광진구<span class='tab-cnt'>3</span></a><a class='gu-tab' href='#s-seodaemun'>서대문구<span class='tab-cnt'>1</span></a><a class='gu-tab' href='#s-dongdaemun'>동대문구<span class='tab-cnt'>1</span></a><a class='gu-tab' href='#s-dobong'>도봉구<span class='tab-cnt'>1</span></a><a class='gu-tab' href='#s-geumcheon'>금천구<span class='tab-cnt'>3</span></a></div>
 
 <div class="map-bar">
   <button class="map-toggle-btn" id="mapBtn" onclick="toggleMap()">지도 보기</button>
+  <button class="plan-toggle-btn" id="planOnlyBtn" onclick="togglePlanOnly()">🌱 방문예정</button>
+</div>
 </div>
 <div id="map"></div>
 
@@ -461,9 +464,23 @@ function togglePlanOnly() {
   planOnlyMode = !planOnlyMode;
   var btn = document.getElementById('planOnlyBtn');
   btn.classList.toggle('active', planOnlyMode);
-  btn.textContent = planOnlyMode ? '전체 목록 보기' : '🌱 갈 예정만 보기';
+  btn.textContent = planOnlyMode ? '전체보기' : '🌱 방문예정';
   applyFilters();
 }
+
+function scrollTabs(dir) {
+  var el = document.getElementById('guTabs');
+  el.scrollBy({ left: dir * 220, behavior: 'smooth' });
+}
+(function(){
+  var el = document.getElementById('guTabs');
+  el.addEventListener('wheel', function(e){
+    if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+      el.scrollLeft += e.deltaY;
+      e.preventDefault();
+    }
+  }, { passive: false });
+})();
 
 function applyFilters() {
   var q = document.getElementById('searchBox').value.toLowerCase().trim();
@@ -486,7 +503,7 @@ function applyFilters() {
     s.style.display = visible.length ? '' : 'none';
   });
   if (q || planOnlyMode) {
-    countEl.textContent = shown + '개 전시' + (planOnlyMode ? ' (갈 예정)' : ' 검색됨');
+    countEl.textContent = shown + '개 전시' + (planOnlyMode ? ' (방문예정)' : ' 검색됨');
     countEl.classList.add('active');
   } else {
     countEl.classList.remove('active');
