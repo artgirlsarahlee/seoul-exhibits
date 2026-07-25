@@ -391,7 +391,7 @@ function toggleMap() {
     btn.textContent = '지도 닫기';
     if (!mapReady) {
       map = L.map('map').setView([37.5665, 126.978], 11);
-      L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+      L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
         attribution: '&copy; OSM &copy; CARTO', maxZoom: 18, subdomains: 'abcd'
       }).addTo(map);
       var v = getVisited(), p = getPlanned();
